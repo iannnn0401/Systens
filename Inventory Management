@@ -1,0 +1,164 @@
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+
+public class Main {
+    private Map<String, Set<String>> inventories;
+
+    
+    public Main() {
+        inventories = new HashMap<>();
+    }
+
+   
+    public void addLocation(String location) {
+        inventories.putIfAbsent(location, new HashSet<>());
+    }
+
+  
+    public boolean addItem(String location, String item) {
+        Set<String> inventory = inventories.get(location);
+        if (inventory != null) {
+            return inventory.add(item);
+            }
+    }
+
+   
+    public boolean removeItem(String location, String item) {
+        Set<String> inventory = inventories.get(location);
+        if (inventory != null) {
+            return inventory.remove(item); 
+            
+        }
+    }
+
+
+    public boolean hasItem(String location, String item) {
+        Set<String> inventory = inventories.get(location);
+        return inventory != null && inventory.contains(item);
+    }
+
+   
+    public void listItems(String location) {
+        Set<String> inventory = inventories.get(location);
+        if (inventory != null) {
+            if (inventory.isEmpty()) {
+                System.out.println("Inventory at " + location + " is empty.");
+            } else {
+                System.out.println("Inventory at " + location + ":");
+                for (String item : inventory) {
+                    System.out.println(item);
+                }
+            }
+        } else {
+            System.out.println("Location not found: " + location);
+        }
+    }
+
+  
+    public void listAllItems() {
+        if (inventories.isEmpty()) {
+            System.out.println("No locations available.");
+            return;
+        }
+        System.out.println("All Products Across All Locations:");
+        for (Map.Entry<String, Set<String>> entry : inventories.entrySet()) {
+            String location = entry.getKey();
+            Set<String> inventory = entry.getValue();
+            System.out.println("\nLocation: " + location);
+            if (inventory.isEmpty()) {
+                System.out.println("  (No products)");
+            } else {
+                for (String item : inventory) {
+                    System.out.println("  " + item);
+                }
+            }
+        }
+    }
+
+    
+    public static void main(String[] args) {
+        Main multiInventory = new Main();
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+
+      
+        multiInventory.addLocation("Store A");
+        multiInventory.addLocation("Store B");
+        multiInventory.addLocation("Store C");
+
+        do {
+            System.out.println("");System.out.println("");
+            System.out.println("Available Store: Store A, Store B, Store C \n");
+            System.out.println("\nMenu of operation in the system.");
+            System.out.println("1. Add Product to a Store");
+            System.out.println("2. Remove Product from a Store");
+            System.out.println("3. Check Product in a Store");
+            System.out.println("4. List of Products in a Store");
+            System.out.println("5. List of Product in all the Stores.");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter location: ");
+                    String store = scanner.nextLine();
+                    System.out.print("Enter product identifier to add: ");
+                    String code = scanner.nextLine();
+                    if (multiInventory.addItem(store, code)) {
+                        System.out.println("Product added successfully to " + store + ".");
+                    } else {
+                        System.out.println("Failed to add product. Check if location exists.");
+                    }
+                    break;
+
+                case 2:
+                    System.out.print("Enter location: ");
+                    String rstore = scanner.nextLine();
+                    System.out.print("Enter product identifier to remove: ");
+                    String rcode = scanner.nextLine();
+                    if (multiInventory.removeItem(rstore, rcode)) {
+                        System.out.println("Product removed successfully from " + rstore + ".");
+                    } else {
+                        System.out.println("Failed to remove product. Check if location or product exists.");
+                    }
+                    break;
+
+                case 3:
+                    System.out.print("Enter location: ");
+                    String cstore = scanner.nextLine();
+                    System.out.print("Enter product identifier to check: ");
+                    String ccode = scanner.nextLine();
+                    if (multiInventory.hasItem(cstore, ccode)) {
+                        System.out.println("Product exists in " + cstore + ".");
+                    } else {
+                        System.out.println("Product not found in " + cstore + ".");
+                    }
+                    break;
+
+                case 4:
+                    System.out.print("Enter location to list products: ");
+                    String lstore = scanner.nextLine();
+                    multiInventory.listItems(lstore);
+                    break;
+
+                case 5:
+                    multiInventory.listAllItems();
+                    break;
+
+                case 6:
+                    System.out.println("Thank you for using our product!(Pasar unta mi sir)");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        } while (choice != 6);
+
+        scanner.close();
+    }
+}
